@@ -27,7 +27,8 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 		this.scrollRect = GetComponent<ScrollRect>();
 		this.content = scrollRect.content;
 		this.cellSize = content.GetComponent<GridLayoutGroup>().cellSize;
-		
+		// enforce content width
+		content.sizeDelta = new Vector2(cellSize.x * ElementCount(), content.rect.width);
 		// setup initial position
 		content.anchoredPosition = new Vector2(-cellSize.x * currentIndex, content.anchoredPosition.y);
 	}
@@ -52,22 +53,26 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	public void OnEndDrag(PointerEventData data) {
-		if(IndexShouldChange(data)) {
+		if(IndexShouldChangeFromDrag(data)) {
 			int newIndex = Mathf.Max(currentIndex + dragDirection, 0);
-			var maxIndex = content.GetComponentsInChildren<LayoutElement>().Length - 1;
+			int maxIndex = ElementCount() - 1;
 
 			// when it's the same it means it tried to go out of bounds
 			if(newIndex >= 0 && newIndex <= maxIndex) {
 				currentIndex = newIndex;
 			}
 		}
+		LerpToIndex(currentIndex);
+	}
+
+	public void LerpToIndex(int index) {
 		releasedPosition = content.anchoredPosition;
-		targetPosition = CalculateTargetPoisition();
+		targetPosition = CalculateTargetPoisition(index);
 		lerpStartedAt = DateTime.Now;
 		isLerping = true;
 	}
 
-	bool IndexShouldChange(PointerEventData data) {
+	bool IndexShouldChangeFromDrag(PointerEventData data) {
 		// acceleration was above threshold
 		if(indexChangeTriggered) {
 			indexChangeTriggered = false;
@@ -86,11 +91,15 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 		content.anchoredPosition = new Vector2(newX, content.anchoredPosition.y);
 	}
 
-	Vector2 CalculateTargetPoisition() {
-		return new Vector2(-cellSize.x * currentIndex, content.anchoredPosition.y);
+	Vector2 CalculateTargetPoisition(int index) {
+		return new Vector2(-cellSize.x * index, content.anchoredPosition.y);
 	}
 
 	bool ShouldStopLerping() {
 		return Mathf.Approximately(content.anchoredPosition.x, targetPosition.x);
+	}
+
+	int ElementCount() {
+		return content.GetComponentsInChildren<LayoutElement>().Length;
 	}
 }
