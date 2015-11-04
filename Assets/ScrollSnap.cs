@@ -53,7 +53,7 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	public void OnEndDrag(PointerEventData data) {
-		if(FlipTriggered(data)) {
+		if(IndexShouldChange(data)) {
 			int newIndex = Mathf.Max(currentIndex + dragDirection, 0);
 			var maxIndex = scrollRect.content.GetComponentsInChildren<LayoutElement>().Length - 1;
 
@@ -68,7 +68,7 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 		isLerping = true;
 	}
 
-	bool FlipTriggered(PointerEventData data) {
+	bool IndexShouldChange(PointerEventData data) {
 		if(isFlipTriggered) {
 			isFlipTriggered = false;
 			return true;
