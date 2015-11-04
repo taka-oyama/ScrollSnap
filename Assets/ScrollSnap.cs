@@ -8,7 +8,7 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 	[SerializeField] public int currentIndex = 0;
 	[SerializeField] public float lerpTimeMilliSeconds = 200f;
 	[SerializeField] public float triggerPercent = 20f;
-	[Range(0.0f, 10.0f)] public float triggerAcceleration = 2f;
+	[Range(0f, 10f)] public float triggerAcceleration = 2f;
 	
 	public delegate void LerpDelegate(Vector2 targetPosition, float transition, int direction);
 	public LerpDelegate onLerp;
