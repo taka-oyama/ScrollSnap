@@ -14,9 +14,10 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 	public LerpDelegate onLerp;
 
 	ScrollRect scrollRect;
-	GridLayoutGroup layoutGroup;
+	RectTransform content;
+	Vector2 cellSize;
 	int dragDirection;
-	bool isFlipTriggered = false;
+	bool indexChangeTriggered = false;
 	bool isLerping = false;
 	DateTime lerpStartedAt;
 	Vector2 releasedPosition;
@@ -24,13 +25,11 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 
 	void Start() {
 		this.scrollRect = GetComponent<ScrollRect>();
-		this.layoutGroup = scrollRect.content.GetComponent<GridLayoutGroup>();
+		this.content = scrollRect.content;
+		this.cellSize = content.GetComponent<GridLayoutGroup>().cellSize;
 		
 		// setup initial position
-		scrollRect.content.anchoredPosition = new Vector2(
-			-layoutGroup.cellSize.x * currentIndex,
-			scrollRect.content.anchoredPosition.y
-		);
+		content.anchoredPosition = new Vector2(-cellSize.x * currentIndex, content.anchoredPosition.y);
 	}
 
 	void LateUpdate() {
@@ -47,7 +46,7 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 		float dt = Time.deltaTime * 1000f;
 		float acceleration = Mathf.Abs(dx / dt);
 		if(acceleration > triggerAcceleration && acceleration != Mathf.Infinity) {
-			isFlipTriggered = true;
+			indexChangeTriggered = true;
 		}
 		dragDirection = dx < 0f ? 1 : -1;
 	}
@@ -55,24 +54,26 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 	public void OnEndDrag(PointerEventData data) {
 		if(IndexShouldChange(data)) {
 			int newIndex = Mathf.Max(currentIndex + dragDirection, 0);
-			var maxIndex = scrollRect.content.GetComponentsInChildren<LayoutElement>().Length - 1;
+			var maxIndex = content.GetComponentsInChildren<LayoutElement>().Length - 1;
 
 			// when it's the same it means it tried to go out of bounds
 			if(newIndex >= 0 && newIndex <= maxIndex) {
 				currentIndex = newIndex;
 			}
 		}
-		releasedPosition = scrollRect.content.anchoredPosition;
+		releasedPosition = content.anchoredPosition;
 		targetPosition = CalculateTargetPoisition();
 		lerpStartedAt = DateTime.Now;
 		isLerping = true;
 	}
 
 	bool IndexShouldChange(PointerEventData data) {
-		if(isFlipTriggered) {
-			isFlipTriggered = false;
+		// acceleration was above threshold
+		if(indexChangeTriggered) {
+			indexChangeTriggered = false;
 			return true;
 		}
+		// dragged beyond trigger threshold
 		return scrollRect.horizontalNormalizedPosition * 100f > triggerPercent;
 	}
 
@@ -82,14 +83,14 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 		if(onLerp != null) {
 			onLerp(targetPosition, t, dragDirection);
 		}
-		scrollRect.content.anchoredPosition = new Vector2(newX, scrollRect.content.anchoredPosition.y);
+		content.anchoredPosition = new Vector2(newX, content.anchoredPosition.y);
 	}
 
 	Vector2 CalculateTargetPoisition() {
-		return new Vector2(-layoutGroup.cellSize.x * currentIndex, scrollRect.content.anchoredPosition.y);
+		return new Vector2(-cellSize.x * currentIndex, content.anchoredPosition.y);
 	}
 
 	bool ShouldStopLerping() {
-		return Mathf.Approximately(scrollRect.content.anchoredPosition.x, targetPosition.x);
+		return Mathf.Approximately(content.anchoredPosition.x, targetPosition.x);
 	}
 }
