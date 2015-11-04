@@ -66,6 +66,7 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	public void LerpToIndex(int index) {
+		scrollRect.StopMovement();
 		releasedPosition = content.anchoredPosition;
 		targetPosition = CalculateTargetPoisition(index);
 		lerpStartedAt = DateTime.Now;
