@@ -3,6 +3,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
 
+[DisallowMultipleComponent]
+[ExecuteInEditMode]
 [RequireComponent(typeof(ScrollRect))]
 public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	[SerializeField] public int currentIndex = 0;
