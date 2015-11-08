@@ -55,10 +55,8 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 
 		if(IndexShouldChangeFromDrag(data)) {
 			int newIndex = Mathf.Max(currentIndex + direction, 0);
-			int maxIndex = ElementCount() - 1;
-
 			// when it's the same it means it tried to go out of bounds
-			if(newIndex >= 0 && newIndex <= maxIndex) {
+			if(newIndex >= 0 && newIndex <= CalculateMaxIndex()) {
 				currentIndex = newIndex;
 			}
 		}
@@ -71,6 +69,11 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 		targetPosition = CalculateTargetPoisition(index);
 		lerpStartedAt = DateTime.Now;
 		isLerping = true;
+	}
+
+	int CalculateMaxIndex() {
+		int cellPerFrame = Mathf.FloorToInt(GetComponent<RectTransform>().sizeDelta.x / cellSize.x);
+		return ElementCount() - cellPerFrame;
 	}
 
 	bool IndexShouldChangeFromDrag(PointerEventData data) {
