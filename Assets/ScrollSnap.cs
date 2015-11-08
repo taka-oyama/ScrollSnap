@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using System;
 
 [RequireComponent(typeof(ScrollRect))]
-public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
+public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	[SerializeField] public int currentIndex = 0;
 	[SerializeField] public float lerpTimeMilliSeconds = 200f;
 	[SerializeField] public float triggerPercent = 10f;
@@ -22,7 +22,8 @@ public class ScrollSnap : MonoBehaviour, IDragHandler, IEndDragHandler {
 	Vector2 releasedPosition;
 	Vector2 targetPosition;
 
-	void Start() {
+	protected override void Start() {
+		base.Start();
 		this.scrollRect = GetComponent<ScrollRect>();
 		this.content = scrollRect.content;
 		this.cellSize = content.GetComponent<GridLayoutGroup>().cellSize;
