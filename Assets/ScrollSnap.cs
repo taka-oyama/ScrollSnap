@@ -75,7 +75,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	int CalculateMaxIndex() {
-		int cellPerFrame = Mathf.FloorToInt(GetComponent<RectTransform>().sizeDelta.x / cellSize.x);
+		int cellPerFrame = Mathf.FloorToInt(scrollRect.viewport.sizeDelta.x / cellSize.x);
 		return ElementCount() - cellPerFrame;
 	}
 
