@@ -14,7 +14,7 @@ Please see the example file provided for details on how to format the UI tree.
 - Change starting index
 - Customize lerping time length
 - Customize lerp triggers by percentage or by acceleration
-- onRelease and onLerpComplete callbacks
+- `onRelease` and `onLerpComplete` callbacks
 
 # Demo Capture
 ![demo](https://cloud.githubusercontent.com/assets/748854/11463199/c5fa9808-9761-11e5-8c3a-e68298fed044.gif)
