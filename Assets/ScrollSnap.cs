@@ -187,8 +187,9 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	void LerpToElement() {
-		float t = (float)((DateTime.Now - lerpStartedAt).TotalMilliseconds / lerpTimeMilliSeconds);
-		float newX = Mathf.Lerp(releasedPosition.x, targetPosition.x, t);
+		//float t = (float)((DateTime.Now - lerpStartedAt).TotalMilliseconds / lerpTimeMilliSeconds);
+		//float newX = Mathf.Lerp(releasedPosition.x, targetPosition.x, t);
+		float newX = (2.0f * content.anchoredPosition.x + targetPosition.x) / 3.0f;
 		content.anchoredPosition = new Vector2(newX, content.anchoredPosition.y);
 	}
 
@@ -215,6 +216,6 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	bool ShouldStopLerping() {
-		return Mathf.Abs(content.anchoredPosition.x - targetPosition.x) < 0.001;
+		return Mathf.Abs(content.anchoredPosition.x - targetPosition.x) < 0.05;
 	}
 }
