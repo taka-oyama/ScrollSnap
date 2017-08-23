@@ -2,6 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System;
+using System.Linq;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
@@ -91,13 +92,8 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	}
 	
 	public int LayoutElementCount() {
-		int count = 0;
-		foreach(Transform t in content.transform) {
-			if(t.GetComponent<LayoutElement>() != null) {
-				count += 1;
-			}
-		}
-		return count;
+		return content.GetComponentsInChildren<LayoutElement> (false)
+			.Count (e => e.transform.parent == content);
 	}
 	
 	public int CurrentIndex {
@@ -170,7 +166,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	int CalculateMaxIndex() {
-		int cellPerFrame = Mathf.FloorToInt(scrollRect.GetComponent<RectTransform>().sizeDelta.x / cellSize.x);
+		int cellPerFrame = Mathf.FloorToInt(scrollRect.GetComponent<RectTransform>().rect.size.x / cellSize.x);
 		return LayoutElementCount() - cellPerFrame;
 	}
 
