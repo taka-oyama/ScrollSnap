@@ -116,9 +116,23 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	public void OnEndDrag(PointerEventData data) {
 		if(IndexShouldChangeFromDrag(data)) {
 			int direction = (data.pressPosition.x - data.position.x) > 0f ? 1 : -1;
-			SnapToIndex(cellIndex + direction);
+			SnapToIndex(cellIndex + direction * CalculateScrollingAmount(data));
 		} else {
 			StartLerping();
+		}
+	}
+
+	public int CalculateScrollingAmount(PointerEventData data) {
+		var offset = scrollRect.content.anchoredPosition.x + cellIndex * cellSize.x;
+		var normalizedOffset = Mathf.Abs(offset / cellSize.x);
+		var skipping = (int)Mathf.Floor(normalizedOffset);
+		if (skipping == 0)
+			return 1;
+		if ((normalizedOffset - skipping) * 100f > triggerPercent) {
+			return skipping + 1;
+		}
+		else {
+			return skipping;
 		}
 	}
 
@@ -137,11 +151,9 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 			cellIndex = newCellIndex;
 			onLerpComplete.AddListener(WrapElementAround);
 		} else {
-			// when it's the same it means it tried to go out of bounds
-			if(newCellIndex >= 0 && newCellIndex <= maxIndex) {
-				actualIndex += newCellIndex - cellIndex;
-				cellIndex = newCellIndex;
-			}
+			newCellIndex = Mathf.Clamp(newCellIndex, 0, maxIndex);
+			actualIndex += newCellIndex - cellIndex;
+			cellIndex = newCellIndex;
 		}
 		onRelease.Invoke(cellIndex);
 		StartLerping();
