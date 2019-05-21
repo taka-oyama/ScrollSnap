@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine.Events;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(ScrollRect))]
+[RequireComponent(typeof(ScrollRect), typeof(CanvasGroup))]
 public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	[SerializeField] public int startingIndex = 0;
 	[SerializeField] public bool wrapAround = false;
