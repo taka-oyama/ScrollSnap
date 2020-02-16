@@ -27,7 +27,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	Vector2 cellSize;
 	bool indexChangeTriggered = false;
 	bool isLerping = false;
-	DateTime lerpStartedAt;
+	float lerpStartedAt;
 	Vector2 releasedPosition;
 	Vector2 targetPosition;
 
@@ -172,7 +172,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	void StartLerping() {
 		releasedPosition = content.anchoredPosition;
 		targetPosition = CalculateTargetPoisition(cellIndex);
-		lerpStartedAt = DateTime.Now;
+		lerpStartedAt = Time.time;
 		canvasGroup.blocksRaycasts = false;
 		isLerping = true;
 	}
@@ -195,7 +195,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	void LerpToElement() {
-		float t = (float)((DateTime.Now - lerpStartedAt).TotalMilliseconds / lerpTimeMilliSeconds);
+        float t = (float)((Time.time - lerpStartedAt) * 1000 / lerpTimeMilliSeconds);
 		float newX = Mathf.Lerp(releasedPosition.x, targetPosition.x, t);
 		content.anchoredPosition = new Vector2(newX, content.anchoredPosition.y);
 	}
