@@ -223,6 +223,6 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler {
 	}
 
 	bool ShouldStopLerping() {
-		return Mathf.Abs(content.anchoredPosition.x - targetPosition.x) < 0.001;
+		return Mathf.Abs(content.anchoredPosition.x - targetPosition.x) < 0.001f;
 	}
 }
