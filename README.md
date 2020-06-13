@@ -8,6 +8,7 @@ Please see the example file provided for details on how to format the UI tree.
 # Tested Environments
 - Unity 5.1 (OSX, Windows 7, iOS, Android)
 - Unity 5.3 (OSX, Windows 7, iOS, Android)
+- Unity 2019.4 (OSX, Windows 7, iOS, Android)
 
 # Features
 - Auto wrap around
