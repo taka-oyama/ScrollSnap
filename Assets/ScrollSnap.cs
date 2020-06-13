@@ -218,7 +218,7 @@ public class ScrollSnap : UIBehaviour, IDragHandler, IEndDragHandler
 
     void LerpToElement()
     {
-        float t = (Time.time - lerpStartedAt) * 1000 / lerpTimeMilliSeconds;
+        float t = (Time.time - lerpStartedAt) * 1000f / lerpTimeMilliSeconds;
         float newX = Mathf.Lerp(releasedPosition.x, targetPosition.x, t);
         content.anchoredPosition = new Vector2(newX, content.anchoredPosition.y);
     }
